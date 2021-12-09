@@ -817,9 +817,30 @@ func (iterator *rIterator) next() (time.Time, bool) {
 	return value, true
 }
 
+// previous returns previous occurrence and true if it exists, else zero value and false
+func (it *rIterator) previous() (time.Time, bool) {
+	if !it.finished {
+		it.generate()
+	}
+	if len(it.remain) == 0 {
+		return time.Time{}, false
+	}
+	value := it.remain[0]
+	it.remain = it.remain[1:]
+	return value, true
+}
+
+func (it *rIterator) Next() (value time.Time, ok bool) {
+	return it.next()
+}
+
+func (it *rIterator) Previous() (value time.Time, ok bool) {
+	return it.previous()
+}
+
 // Iterator return an iterator for RRule
 func (r *RRule) Iterator() Next {
-	iterator := rIterator{}
+	iterator := &rIterator{}
 	iterator.year, iterator.month, iterator.day = r.dtstart.Date()
 	iterator.hour, iterator.minute, iterator.second = r.dtstart.Clock()
 	iterator.weekday = toPyWeekday(r.dtstart.Weekday())
