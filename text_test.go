@@ -170,6 +170,9 @@ func Test_rruleText_YEARLY(t *testing.T) {
 		{expected: fmt.Sprintf("Every %s %s", month, dayth), text: "FREQ=YEARLY"},
 		{expected: "The 1st Friday of every year", text: "FREQ=YEARLY;BYDAY=+1FR"},
 		{expected: "The 13th Friday of every year", text: "FREQ=YEARLY;BYDAY=+13FR"},
+		{expected: "The 3rd day of every year", text: "FREQ=YEARLY;BYYEARDAY=3"},
+		{expected: "The 3rd to last day of every year", text: "FREQ=YEARLY;BYYEARDAY=-3"},
+		{expected: "The 25th day of every year", text: "FREQ=YEARLY;BYYEARDAY=25"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {

@@ -99,20 +99,20 @@ var (
 			nil: "%{n}th to last day",
 		},
 		"byyearday": map[interface{}]string{
-			1:   " on %{yeardays} day",
-			nil: " on %{yeardays} days",
+			1:   "%{yeardays} day",
+			nil: "%{yeardays} days",
 		},
 		"nth_yearday": map[interface{}]string{
-			1:   "the first",
-			2:   "the second",
-			3:   "the third",
-			nil: "the %{n}th",
+			1:   "1st",
+			2:   "2nd",
+			3:   "3rd",
+			nil: "%{n}th",
 		},
 		"-nth_yearday": map[interface{}]string{
-			-1:  "the last",
-			-2:  "the 2nd to last",
-			-3:  "the 3rd to last",
-			nil: "the %{n}th to the last",
+			-1:  "last",
+			-2:  "2nd to last",
+			-3:  "3rd to last",
+			nil: "%{n}th to last",
 		},
 		"byhour": map[interface{}]string{
 			1:   " at hour %{hours}",
@@ -179,8 +179,9 @@ func (r *rruleText) String() string {
 	r.yearly()
 
 	// shared
-	r._bySecond()
+	r._byHour()
 	r._byMinute()
+	r._bySecond()
 
 	b := strings.Builder{}
 	for _, str := range order {
@@ -230,6 +231,8 @@ func (r *rruleText) yearly() {
 
 	if len(r.OrigOptions.Bymonth) > 0 {
 		r._byMonth()
+	} else if len(r.OrigOptions.Byyearday) > 0 {
+		r._byYearDay()
 	} else if len(r.OrigOptions.Byweekno) > 0 {
 		r._byWeekno()
 	} else if len(r.OrigOptions.Byweekday) > 0 {
@@ -410,6 +413,36 @@ func (r *rruleText) _byMonth() {
 		recurStrings["bymonth"],
 		nil,
 		"%{months}", r.stringList(tmp),
+	)
+}
+
+func (r *rruleText) _byYearDay() {
+	if len(r.byyearday) == 0 {
+		return
+	}
+
+	tmp := make([]interface{}, len(r.byyearday))
+	for i, yd := range r.byyearday {
+		selection := "nth_yearday"
+		if yd < 0 {
+			selection = "-nth_yearday"
+		}
+
+		tmp[i] = r.stringSelect(
+			recurStrings[selection],
+			yd,
+			"%{n}", int(math.Abs(float64(yd))),
+		)
+	}
+
+	r.parts["byyearday"] = r.stringSelect(
+		recurStrings["x_of_the_y"],
+		YEARLY,
+		"%{x}", r.stringSelect(
+			recurStrings["byyearday"],
+			len(tmp),
+			"%{yeardays}", r.stringList(tmp),
+		),
 	)
 }
 
