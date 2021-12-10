@@ -18,6 +18,23 @@ func runText(t *testing.T, text, expected string) {
 	}
 }
 
+func Test_rruleText_SECONDLY(t *testing.T) {
+	tests := []struct {
+		text     string
+		expected string
+	}{
+		// MINUTELY
+		{expected: "Every second", text: "FREQ=SECONDLY"},
+		{expected: "Every other second", text: "FREQ=SECONDLY;INTERVAL=2"},
+		{expected: "Every 3 seconds", text: "FREQ=SECONDLY;INTERVAL=3"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expected, func(t *testing.T) {
+			runText(t, tt.text, tt.expected)
+		})
+	}
+}
+
 func Test_rruleText_MINUTELY(t *testing.T) {
 	tests := []struct {
 		text     string
@@ -27,6 +44,7 @@ func Test_rruleText_MINUTELY(t *testing.T) {
 		{expected: "Every minute", text: "FREQ=MINUTELY"},
 		{expected: "Every other minute", text: "FREQ=MINUTELY;INTERVAL=2"},
 		{expected: "Every 3 minutes", text: "FREQ=MINUTELY;INTERVAL=3"},
+		{expected: "Every 3 minutes at seconds 15 and 30", text: "FREQ=MINUTELY;INTERVAL=3;BYSECOND=15,30"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
@@ -44,6 +62,8 @@ func Test_rruleText_HOURLY(t *testing.T) {
 		{expected: "Every other hour", text: "FREQ=HOURLY;INTERVAL=2"},
 		{expected: "Every 6 hours", text: "FREQ=HOURLY;INTERVAL=6"},
 		{expected: "Every 4 hours", text: "INTERVAL=4;FREQ=HOURLY"},
+		{expected: "Every 4 hours at minute 50", text: "INTERVAL=4;FREQ=HOURLY;BYMINUTE=50"},
+		{expected: "Every 4 hours at minutes 15 and 23", text: "INTERVAL=4;FREQ=HOURLY;BYMINUTE=15,23"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
@@ -60,7 +80,8 @@ func Test_rruleText_DAILY(t *testing.T) {
 		{expected: "Every day", text: "FREQ=DAILY"},
 		{expected: "Every other day", text: "FREQ=DAILY;INTERVAL=2"},
 		{expected: "Every 365 days", text: "FREQ=DAILY;INTERVAL=365"},
-		{expected: "Every day at 10, 12 and 17", text: "FREQ=DAILY;BYHOUR=10,12,17"},
+		{expected: "Every day at hour 10", text: "FREQ=DAILY;BYHOUR=10"},
+		{expected: "Every day at hours 10, 12 and 17", text: "FREQ=DAILY;BYHOUR=10,12,17"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {

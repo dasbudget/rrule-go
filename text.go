@@ -115,8 +115,8 @@ var (
 			nil: "the %{n}th to the last",
 		},
 		"byhour": map[interface{}]string{
-			1:   " at %{hours}",
-			nil: " at %{hours}",
+			1:   " at hour %{hours}",
+			nil: " at hours %{hours}",
 		},
 		"nth_hour": "%{n}",
 		"byminute": map[interface{}]string{
@@ -177,6 +177,10 @@ func (r *rruleText) String() string {
 	r.weekly()
 	r.monthly()
 	r.yearly()
+
+	// shared
+	r._bySecond()
+	r._byMinute()
 
 	b := strings.Builder{}
 	for _, str := range order {
@@ -259,6 +263,40 @@ func (r *rruleText) _byHour() {
 		recurStrings["byhour"],
 		len(tmp),
 		"%{hours}", r.stringList(tmp),
+	)
+}
+
+func (r *rruleText) _bySecond() {
+	if len(r.OrigOptions.Bysecond) == 0 {
+		return
+	}
+
+	tmp := make([]interface{}, len(r.OrigOptions.Bysecond))
+	for i, sec := range r.OrigOptions.Bysecond {
+		tmp[i] = r.stringSelect(recurStrings["nth_second"], sec, "%{n}", sec)
+	}
+
+	r.parts["bysecond"] = r.stringSelect(
+		recurStrings["bysecond"],
+		len(tmp),
+		"%{seconds}", r.stringList(tmp),
+	)
+}
+
+func (r *rruleText) _byMinute() {
+	if len(r.OrigOptions.Byminute) == 0 {
+		return
+	}
+
+	tmp := make([]interface{}, len(r.OrigOptions.Byminute))
+	for i, sec := range r.OrigOptions.Byminute {
+		tmp[i] = r.stringSelect(recurStrings["nth_minute"], sec, "%{n}", sec)
+	}
+
+	r.parts["byminute"] = r.stringSelect(
+		recurStrings["byminute"],
+		len(tmp),
+		"%{minutes}", r.stringList(tmp),
 	)
 }
 
