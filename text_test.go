@@ -173,6 +173,7 @@ func Test_rruleText_YEARLY(t *testing.T) {
 		{expected: "The 3rd day of every year", text: "FREQ=YEARLY;BYYEARDAY=3"},
 		{expected: "The 3rd to last day of every year", text: "FREQ=YEARLY;BYYEARDAY=-3"},
 		{expected: "The 25th day of every year", text: "FREQ=YEARLY;BYYEARDAY=25"},
+		{expected: "The 25th Monday of every year", text: "FREQ=YEARLY;BYDAY=+25MO"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
