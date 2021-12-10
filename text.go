@@ -474,23 +474,6 @@ func (r *rruleText) isEveryDay() bool {
 	return len(r.byweekday) == 7
 }
 
-//func humanFriendlyText(r *RRule) string {
-//	// Every (INTERVAL) FREQ...
-//
-//	// BYXXX rules
-//
-//	// todo BYYEARDAY
-//
-//
-
-//
-//	// todo BYMINUTE
-//	// todo BYSECOND
-//	// todo bysetpos
-//
-
-//}
-
 func (r rruleText) selectString(vals interface{}, key interface{}, oldnew ...interface{}) string {
 	format := ""
 
