@@ -196,14 +196,6 @@ func (r *rruleText) String() string {
 	return string(s)
 }
 
-func (r *rruleText) daily() {
-	if r.freq != DAILY {
-		return
-	}
-
-	r._byHour()
-}
-
 func (r *rruleText) weekly() {
 	if r.freq != WEEKLY {
 		return
