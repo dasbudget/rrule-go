@@ -3,7 +3,6 @@ package rrule
 import (
 	"errors"
 	"math"
-	"reflect"
 	"time"
 )
 
@@ -26,15 +25,6 @@ func (s timeSlice) Less(i, j int) bool { return s[i].Before(s[j]) }
 // Golang: SU-SAT 0 - 6
 func toPyWeekday(from time.Weekday) int {
 	return []int{6, 0, 1, 2, 3, 4, 5}[from]
-}
-
-// Python: MO-SU: 0 - 6
-// Golang: SU-SAT 0 - 6
-func fromPyWeekday(from int) time.Weekday {
-	return []time.Weekday{
-		time.Monday, time.Tuesday, time.Wednesday,
-		time.Thursday, time.Friday, time.Saturday, time.Sunday,
-	}[from]
 }
 
 // year -> 1 if leap year, else 0."
@@ -66,15 +56,6 @@ func divmod(a, b int) (div, mod int) {
 }
 
 func contains(list []int, elem int) bool {
-	for _, t := range list {
-		if t == elem {
-			return true
-		}
-	}
-	return false
-}
-
-func stringContains(list []string, elem string) bool {
 	for _, t := range list {
 		if t == elem {
 			return true
@@ -195,26 +176,6 @@ func after(next Next, dt time.Time, inc bool) time.Time {
 			return v
 		}
 	}
-}
-
-func interfaceSlice(slice interface{}) []interface{} {
-	s := reflect.ValueOf(slice)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-
-	// Keep the distinction between nil and empty slice input
-	if s.IsNil() {
-		return nil
-	}
-
-	ret := make([]interface{}, s.Len())
-
-	for i := 0; i < s.Len(); i++ {
-		ret[i] = s.Index(i).Interface()
-	}
-
-	return ret
 }
 
 type optInt struct {

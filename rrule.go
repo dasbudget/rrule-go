@@ -20,10 +20,6 @@ var (
 	M365RANGE    = []int{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365}
 )
 
-const (
-	maxDuration = time.Duration(1<<63 - 1)
-)
-
 func init() {
 	M366MASK = concat(repeat(1, 31), repeat(2, 29), repeat(3, 31),
 		repeat(4, 30), repeat(5, 31), repeat(6, 30), repeat(7, 31),
@@ -80,9 +76,12 @@ func (wday *Weekday) Day() int {
 	return wday.weekday
 }
 
-// ToWeekday returns the native Go weekday
+// ToWeekday returns the Python weekday native Go weekday
 func (wday *Weekday) ToWeekday() time.Weekday {
-	return fromPyWeekday(wday.weekday)
+	return []time.Weekday{
+		time.Monday, time.Tuesday, time.Wednesday,
+		time.Thursday, time.Friday, time.Saturday, time.Sunday,
+	}[wday.weekday]
 }
 
 // Weekdays
@@ -178,7 +177,7 @@ func buildRRule(arg ROption) RRule {
 	// UNTIL
 	if arg.Until.IsZero() {
 		// add largest representable duration (approximately 290 years).
-		r.until = r.dtstart.Add(maxDuration)
+		r.until = r.dtstart.Add(time.Duration(1<<63 - 1))
 	} else {
 		arg.Until = arg.Until.Truncate(time.Second)
 		r.until = arg.Until
