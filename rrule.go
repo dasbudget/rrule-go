@@ -960,5 +960,5 @@ func (r *RRule) GetUntil() time.Time {
 
 // ToText turns this RRule into human friendly text
 func (r *RRule) ToText() string {
-	return (&rruleText{rrule: r}).String()
+	return (&rruleText{RRule: *r}).String()
 }
