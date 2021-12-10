@@ -169,14 +169,15 @@ func (r *rruleText) String() string {
 	}
 
 	switch r.freq {
-	case SECONDLY, MINUTELY, HOURLY, DAILY:
+	case SECONDLY, MINUTELY, HOURLY, DAILY: // these have simple, common human text
 		r.parts["freq"] = r.selectString(recurStrings[r.freq], r.interval, "%{interval}", r.interval)
+	case WEEKLY:
+		r.weekly()
+	case MONTHLY:
+		r.monthly()
+	case YEARLY:
+		r.yearly()
 	}
-
-	r.daily()
-	r.weekly()
-	r.monthly()
-	r.yearly()
 
 	// shared
 	r._byHour()
