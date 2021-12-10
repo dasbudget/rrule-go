@@ -170,7 +170,7 @@ func (r *rruleText) String() string {
 
 	switch r.freq {
 	case SECONDLY, MINUTELY, HOURLY, DAILY:
-		r.parts["freq"] = r.stringSelect(recurStrings[r.freq], r.interval, "%{interval}", r.interval)
+		r.parts["freq"] = r.selectString(recurStrings[r.freq], r.interval, "%{interval}", r.interval)
 	}
 
 	r.daily()
@@ -238,12 +238,12 @@ func (r *rruleText) yearly() {
 	} else if len(r.OrigOptions.Byweekday) > 0 {
 		r._byWeekday()
 	} else {
-		r.parts["bymonthday"] = r.stringSelect(
+		r.parts["bymonthday"] = r.selectString(
 			recurStrings[YEARLY],
 			r.interval,
 			"%{interval}", r.interval,
 			"%{month}", r.dtstart.Month(),
-			"%{nth}", r.stringSelect(
+			"%{nth}", r.selectString(
 				recurStrings["nth_monthday"],
 				r.dtstart.Day(),
 				"%{n}", int(math.Abs(float64(r.dtstart.Day()))),
@@ -259,13 +259,13 @@ func (r *rruleText) _byHour() {
 
 	tmp := make([]interface{}, len(r.OrigOptions.Byhour))
 	for i, hr := range r.OrigOptions.Byhour {
-		tmp[i] = r.stringSelect(recurStrings["nth_hour"], hr, "%{n}", hr)
+		tmp[i] = r.selectString(recurStrings["nth_hour"], hr, "%{n}", hr)
 	}
 
-	r.parts["byhour"] = r.stringSelect(
+	r.parts["byhour"] = r.selectString(
 		recurStrings["byhour"],
 		len(tmp),
-		"%{hours}", r.stringList(tmp),
+		"%{hours}", r.join(tmp),
 	)
 }
 
@@ -276,13 +276,13 @@ func (r *rruleText) _bySecond() {
 
 	tmp := make([]interface{}, len(r.OrigOptions.Bysecond))
 	for i, sec := range r.OrigOptions.Bysecond {
-		tmp[i] = r.stringSelect(recurStrings["nth_second"], sec, "%{n}", sec)
+		tmp[i] = r.selectString(recurStrings["nth_second"], sec, "%{n}", sec)
 	}
 
-	r.parts["bysecond"] = r.stringSelect(
+	r.parts["bysecond"] = r.selectString(
 		recurStrings["bysecond"],
 		len(tmp),
-		"%{seconds}", r.stringList(tmp),
+		"%{seconds}", r.join(tmp),
 	)
 }
 
@@ -293,13 +293,13 @@ func (r *rruleText) _byMinute() {
 
 	tmp := make([]interface{}, len(r.OrigOptions.Byminute))
 	for i, sec := range r.OrigOptions.Byminute {
-		tmp[i] = r.stringSelect(recurStrings["nth_minute"], sec, "%{n}", sec)
+		tmp[i] = r.selectString(recurStrings["nth_minute"], sec, "%{n}", sec)
 	}
 
-	r.parts["byminute"] = r.stringSelect(
+	r.parts["byminute"] = r.selectString(
 		recurStrings["byminute"],
 		len(tmp),
-		"%{minutes}", r.stringList(tmp),
+		"%{minutes}", r.join(tmp),
 	)
 }
 
@@ -321,10 +321,10 @@ func (r *rruleText) _byWeekday() {
 			}
 		}
 
-		r.parts["byweekday"] = r.stringSelect(
+		r.parts["byweekday"] = r.selectString(
 			recurStrings[WEEKLY],
 			r.interval,
-			"%{weekdays}", r.stringList(tmp),
+			"%{weekdays}", r.join(tmp),
 		)
 	}
 
@@ -336,7 +336,7 @@ func (r *rruleText) _byWeekday() {
 				selection = "-nth_weekday"
 			}
 
-			tmp[i] = r.stringSelect(
+			tmp[i] = r.selectString(
 				recurStrings[selection],
 				day.N(),
 				"%{n}", int(math.Abs(float64(day.N()))),
@@ -344,11 +344,11 @@ func (r *rruleText) _byWeekday() {
 			)
 		}
 
-		r.parts["bymonthday"] = r.stringSelect(
+		r.parts["bymonthday"] = r.selectString(
 			recurStrings["x_of_the_y"],
 			r.freq,
-			"%{x}", r.stringList(tmp),
-			"%{weekdays}", r.stringList(tmp),
+			"%{x}", r.join(tmp),
+			"%{weekdays}", r.join(tmp),
 			"%{interval}", r.interval,
 			"%{day}", r.dtstart.Day(),
 		)
@@ -369,28 +369,28 @@ func (r *rruleText) _byMonthDay() {
 				selection = "-nth_monthday"
 			}
 
-			tmp[i] = r.stringSelect(
+			tmp[i] = r.selectString(
 				recurStrings[selection],
 				day,
 				"%{n}", int(math.Abs(float64(day))),
 			)
 		}
 
-		r.parts["bymonthday"] = r.stringSelect(
+		r.parts["bymonthday"] = r.selectString(
 			recurStrings[MONTHLY],
 			r.interval,
-			"%{x}", r.stringList(tmp),
+			"%{x}", r.join(tmp),
 			"%{interval}", r.interval,
 			"%{month}", r.dtstart.Month(),
-			"%{nth}", r.stringSelect(
+			"%{nth}", r.selectString(
 				recurStrings["nth_monthday"],
 				r.dtstart.Day(),
 				"%{n}", int(math.Abs(float64(r.dtstart.Day()))),
 			),
 		)
 	} else {
-		nth := r.stringSelect(recurStrings["nth_monthday"], r.dtstart.Day(), "%{n}", r.dtstart.Day())
-		r.parts["freq"] = r.stringSelect(recurStrings[r.freq], r.interval,
+		nth := r.selectString(recurStrings["nth_monthday"], r.dtstart.Day(), "%{n}", r.dtstart.Day())
+		r.parts["freq"] = r.selectString(recurStrings[r.freq], r.interval,
 			"%{interval}", fmt.Sprint(r.interval),
 			"%{month}", r.dtstart.Month().String(),
 			"%{x}", nth,
@@ -409,10 +409,10 @@ func (r *rruleText) _byMonth() {
 		tmp[i] = time.Month(mo)
 	}
 
-	r.parts["bymonth"] = r.stringSelect(
+	r.parts["bymonth"] = r.selectString(
 		recurStrings["bymonth"],
 		nil,
-		"%{months}", r.stringList(tmp),
+		"%{months}", r.join(tmp),
 	)
 }
 
@@ -428,20 +428,20 @@ func (r *rruleText) _byYearDay() {
 			selection = "-nth_yearday"
 		}
 
-		tmp[i] = r.stringSelect(
+		tmp[i] = r.selectString(
 			recurStrings[selection],
 			yd,
 			"%{n}", int(math.Abs(float64(yd))),
 		)
 	}
 
-	r.parts["byyearday"] = r.stringSelect(
+	r.parts["byyearday"] = r.selectString(
 		recurStrings["x_of_the_y"],
 		YEARLY,
-		"%{x}", r.stringSelect(
+		"%{x}", r.selectString(
 			recurStrings["byyearday"],
 			len(tmp),
-			"%{yeardays}", r.stringList(tmp),
+			"%{yeardays}", r.join(tmp),
 		),
 	)
 }
@@ -456,10 +456,10 @@ func (r *rruleText) _byWeekno() {
 		tmp[i] = mo
 	}
 
-	r.parts["byweekno"] = r.stringSelect(
+	r.parts["byweekno"] = r.selectString(
 		recurStrings["byweekno"],
 		len(tmp),
-		"%{weeks}", r.stringList(tmp),
+		"%{weeks}", r.join(tmp),
 	)
 }
 
@@ -490,7 +490,7 @@ func (r *rruleText) isEveryDay() bool {
 
 //}
 
-func (r rruleText) stringSelect(vals interface{}, key interface{}, oldnew ...interface{}) string {
+func (r rruleText) selectString(vals interface{}, key interface{}, oldnew ...interface{}) string {
 	format := ""
 
 	switch v := vals.(type) {
@@ -517,7 +517,7 @@ func (r rruleText) stringSelect(vals interface{}, key interface{}, oldnew ...int
 	return strings.NewReplacer(kvs...).Replace(format)
 }
 
-func (r rruleText) stringList(vals []interface{}) string {
+func (r rruleText) join(vals []interface{}) string {
 	if len(vals) == 1 {
 		return fmt.Sprint(vals[0])
 	}

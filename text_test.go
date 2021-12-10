@@ -126,7 +126,7 @@ func Test_rruleText_WEEKLY(t *testing.T) {
 func Test_rruleText_MONTHLY(t *testing.T) {
 	now := time.Now().UTC()
 	month := now.Month()
-	dayth := rruleText{}.stringSelect(recurStrings["nth_monthday"], now.Day(), "%{n}", now.Day())
+	dayth := rruleText{}.selectString(recurStrings["nth_monthday"], now.Day(), "%{n}", now.Day())
 
 	tests := []struct {
 		name string
@@ -161,7 +161,7 @@ func Test_rruleText_MONTHLY(t *testing.T) {
 func Test_rruleText_YEARLY(t *testing.T) {
 	now := time.Now().UTC()
 	month := now.Month()
-	dayth := rruleText{}.stringSelect(recurStrings["nth_monthday"], now.Day(), "%{n}", now.Day())
+	dayth := rruleText{}.selectString(recurStrings["nth_monthday"], now.Day(), "%{n}", now.Day())
 
 	tests := []struct {
 		text     string
