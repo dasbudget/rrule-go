@@ -129,22 +129,22 @@ func Test_rruleText_MONTHLY(t *testing.T) {
 	dayth := rruleText{}.selectString(recurStrings["nth_monthday"], now.Day(), "%{n}", now.Day())
 
 	tests := []struct {
-		name string
+		name     string
 		text     string
 		expected string
 	}{
-		{name:"The %s of every month", expected: fmt.Sprintf("The %s of every month", dayth), text: "FREQ=MONTHLY"},
-		{name:"Every 6 months starting %s %s", expected: fmt.Sprintf("Every 6 months starting %s %s", month, dayth), text: "INTERVAL=6;FREQ=MONTHLY"},
-		{name:"The 4th of every month", text: "FREQ=MONTHLY;BYMONTHDAY=4"},
-		{name:"The 4th to last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=-4"},
-		{name:"The 8th to last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=-8"},
-		{name:"The 15th and last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=15,-1"},
-		{name:"The 7th, 20th and 2nd to last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=7,20,-2"},
-		{name:"The 3rd Tuesday of every month", text: "FREQ=MONTHLY;BYDAY=+3TU"},
-		{name:"The 2nd Monday and 3rd Tuesday of every month", text: "FREQ=MONTHLY;BYDAY=+2MO,+3TU"},
-		{name:"The 3rd to last Tuesday of every month", text: "FREQ=MONTHLY;BYDAY=-3TU"},
-		{name:"The last Monday of every month", text: "FREQ=MONTHLY;BYDAY=-1MO"},
-		{name:"The 2nd to last Friday of every month", text: "FREQ=MONTHLY;BYDAY=-2FR"},
+		{name: "The %s of every month", expected: fmt.Sprintf("The %s of every month", dayth), text: "FREQ=MONTHLY"},
+		{name: "Every 6 months starting %s %s", expected: fmt.Sprintf("Every 6 months starting %s %s", month, dayth), text: "INTERVAL=6;FREQ=MONTHLY"},
+		{name: "The 4th of every month", text: "FREQ=MONTHLY;BYMONTHDAY=4"},
+		{name: "The 4th to last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=-4"},
+		{name: "The 8th to last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=-8"},
+		{name: "The 15th and last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=15,-1"},
+		{name: "The 7th, 20th and 2nd to last day of every month", text: "FREQ=MONTHLY;BYMONTHDAY=7,20,-2"},
+		{name: "The 3rd Tuesday of every month", text: "FREQ=MONTHLY;BYDAY=+3TU"},
+		{name: "The 2nd Monday and 3rd Tuesday of every month", text: "FREQ=MONTHLY;BYDAY=+2MO,+3TU"},
+		{name: "The 3rd to last Tuesday of every month", text: "FREQ=MONTHLY;BYDAY=-3TU"},
+		{name: "The last Monday of every month", text: "FREQ=MONTHLY;BYDAY=-1MO"},
+		{name: "The 2nd to last Friday of every month", text: "FREQ=MONTHLY;BYDAY=-2FR"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
