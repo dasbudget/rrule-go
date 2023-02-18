@@ -76,6 +76,14 @@ func (wday *Weekday) Day() int {
 	return wday.weekday
 }
 
+// ToWeekday returns the Python weekday native Go weekday
+func (wday *Weekday) ToWeekday() time.Weekday {
+	return []time.Weekday{
+		time.Monday, time.Tuesday, time.Wednesday,
+		time.Thursday, time.Friday, time.Saturday, time.Sunday,
+	}[wday.weekday]
+}
+
 // Weekdays
 var (
 	MO = Weekday{weekday: 0}
@@ -947,4 +955,9 @@ func (r *RRule) Until(ut time.Time) {
 // GetUntil gets UNTIL time for rrule
 func (r *RRule) GetUntil() time.Time {
 	return r.until
+}
+
+// ToText turns this RRule into human friendly text
+func (r *RRule) ToText() string {
+	return (&rruleText{RRule: *r}).String()
 }
